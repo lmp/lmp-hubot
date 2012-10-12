@@ -36,7 +36,7 @@ module.exports = (robot) ->
               if err
                 msg.send "Pivotal says: #{err}"
                 return
-      
+
               (new Parser).parseString body, (err, json)->
                 for story in json.iteration.stories.story
                   message = "##{story.id['#']} #{story.name}"

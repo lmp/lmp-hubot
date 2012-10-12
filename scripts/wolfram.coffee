@@ -25,5 +25,6 @@ module.exports = (robot) ->
       # console.log result
       if result and result.length > 0
         msg.send result[1]['subpods'][0]['value']
+        msg.send result[1]["subpods"][0]["image"]
       else
         msg.send 'Hmm...not sure'

@@ -18,11 +18,12 @@
     "hubot": "2.3.2",
     "hubot-scripts": ">= 2.1.0",
     "optparse": "1.0.3",
-    "htmlparser": "1.7.6", 
+    "htmlparser": "1.7.6",
     "soupselect": "0.2.0",
     "jsdom": "0.2.14",
     "underscore": "1.4.2",
-    "underscore.string": "2.3.0"
+    "underscore.string": "2.3.0",
+    "xml2js": "0.2.0"
   },
 
   "engines": {
@@ -30,4 +31,3 @@
     "npm": "1.0.x"
   }
 }
-

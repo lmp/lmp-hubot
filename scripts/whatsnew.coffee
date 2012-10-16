@@ -24,7 +24,5 @@ module.exports = (robot) ->
         summaries = _.map commits, (commit) -> [commit["id"].slice(0,8),
                                                 commit["summary"] ? "No summary recorded",
                                                 "http://github.com/lmp/degreesearch/commit/#{commit["id"]}"]
-        text = _.inject summaries, (t, summary) ->
-          t += summary.join(": ") + "\n"
-        , ""
-        msg.send text
+        _.each summaries, (summary) ->
+          msg.send summary.join(": ")

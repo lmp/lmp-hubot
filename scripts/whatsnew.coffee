@@ -21,8 +21,15 @@ module.exports = (robot) ->
       .http("http://git.lmpcloud.com:9191/repos/degreesearch")
       .get() (err, res, body) ->
         commits = JSON.parse(body)
-        summaries = _.map commits, (commit) -> [commit["id"].slice(0,8),
-                                                commit["summary"] ? "No summary recorded",
-                                                "http://github.com/lmp/degreesearch/commit/#{commit["id"]}"]
-        _.each summaries, (summary) ->
-          msg.send summary.join(": ")
+
+        _.each commits, (commit) ->
+          shortSha = commit.id.slice(0, 8)
+          summary = _.first commit.summary.split("\n")
+
+          msg.http("http://git.io")
+            .post("url=#{makeLink(commit.id)}") (err, resp) ->
+              unless err
+                msg.send "#{shortSha}: #{summary} #{resp.headers.location}"
+
+  makeLink = (sha) ->
+    "http://github.com/lmp/degreesearch/commit/#{sha}"

@@ -47,8 +47,8 @@ module.exports = (robot) ->
         
         msg.send reply
 
-  robot.respond /antonym(?: me)? (.*)/i, (msg) ->
-    word = msg.match[2]
+  robot.respond /antonym( me)? (.*)/i, (msg) ->
+    word = msg.match[msg.match.length - 1]
     opts = {relationshipTypes: "antonym"}
 
     fetch_wordnik_resource(msg, word, 'relatedWords', opts) (err, res, body) ->
@@ -70,8 +70,8 @@ module.exports = (robot) ->
     else
       "#{title} for \"#{word}\": " + responses.join(", ") + "."
 
-  robot.respond /synonym(?: me)? (.*)/i, (msg) ->
-    word = msg.match[2]
+  robot.respond /synonym( me)? (.*)/i, (msg) ->
+    word = msg.match[msg.match.length - 1]
     opts = {relationshipTypes: "synonym"}
 
     fetch_wordnik_resource(msg, word, 'relatedWords', opts) (err, res, body) ->

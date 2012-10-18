@@ -47,6 +47,37 @@ module.exports = (robot) ->
         
         msg.send reply
 
+  robot.respond /antonym(?: me)? (.*)/i, (msg) ->
+    word = msg.match[2]
+    opts = {relationshipTypes: "antonym"}
+
+    fetch_wordnik_resource(msg, word, 'relatedWords', opts) (err, res, body) ->
+      antonyms = extractRelatedResponses(body)
+      msg.send listResponses(word, antonyms, "Antonyms")
+
+  extractRelatedResponses = (body) ->
+    try
+      jsonData = JSON.parse(body)
+    catch e
+      jsonData = []
+
+    jsonData?[0]?.words ? []
+
+  listResponses = (word, responses, title) ->
+
+    if not responses or responses.length is 0
+      "No #{title.toLowerCase()} for \"#{word}\" found."
+    else
+      "#{title} for \"#{word}\": " + responses.join(", ") + "."
+
+  robot.respond /synonym(?: me)? (.*)/i, (msg) ->
+    word = msg.match[2]
+    opts = {relationshipTypes: "synonym"}
+
+    fetch_wordnik_resource(msg, word, 'relatedWords', opts) (err, res, body) ->
+      synonyms = extractRelatedResponses(body)
+      msg.send listResponses(word, synonyms, "Synonyms")
+
   # Pronunciation
   robot.respond /(pronounce|enunciate)( me)? (.*)/i, (msg) ->
     word = msg.match[3]

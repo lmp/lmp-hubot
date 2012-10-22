@@ -1,5 +1,5 @@
 # Description:
-#   Dictionary definitions with the Wordnik API. 
+#   Dictionary definitions with the Wordnik API.
 #
 # Dependencies:
 #   None
@@ -11,6 +11,8 @@
 #   hubot define me <word> - Grabs a dictionary definition of a word.
 #   hubot pronounce me <word> - Links to a pronunciation of a word.
 #   hubot spell me <word> - Suggests correct spellings of a possible word.
+#   hubot synonym me <word> - Grabs synonyms of a word.
+#   hubot antonym me <word> - Grabs antonyms of a word.
 #
 # Notes:
 #   You'll need an API key from http://developer.wordnik.com/
@@ -24,16 +26,16 @@ module.exports = (robot) ->
   # Word definition
   robot.respond /define( me)? (.*)/i, (msg) ->
     word = msg.match[2]
-    
+
     fetch_wordnik_resource(msg, word, 'definitions', {}) (err, res, body) ->
       definitions = JSON.parse(body)
-      
+
       if definitions.length == 0
         msg.send "No definitions for \"#{word}\" found."
       else
         reply = "Definitions for \"#{word}\":\n"
         lastSpeechType = null
-        
+
         definitions = definitions.forEach (def) ->
           # Show the part of speech (noun, verb, etc.) when it changes
           if def.partOfSpeech != lastSpeechType
@@ -44,7 +46,7 @@ module.exports = (robot) ->
 
           # Add the definition
           reply += "  - #{def.text}\n"
-        
+
         msg.send reply
 
   robot.respond /antonym( me)? (.*)/i, (msg) ->
@@ -53,7 +55,7 @@ module.exports = (robot) ->
 
     fetch_wordnik_resource(msg, word, 'relatedWords', opts) (err, res, body) ->
       antonyms = extractRelatedResponses(body)
-      msg.send listResponses(word, antonyms, "Antonyms")
+      msg.send listRelatedResponses(word, antonyms, "Antonyms")
 
   extractRelatedResponses = (body) ->
     try
@@ -63,7 +65,7 @@ module.exports = (robot) ->
 
     jsonData?[0]?.words ? []
 
-  listResponses = (word, responses, title) ->
+  listRelatedResponses = (word, responses, title) ->
 
     if not responses or responses.length is 0
       "No #{title.toLowerCase()} for \"#{word}\" found."
@@ -76,15 +78,15 @@ module.exports = (robot) ->
 
     fetch_wordnik_resource(msg, word, 'relatedWords', opts) (err, res, body) ->
       synonyms = extractRelatedResponses(body)
-      msg.send listResponses(word, synonyms, "Synonyms")
+      msg.send listRelatedResponses(word, synonyms, "Synonyms")
 
   # Pronunciation
   robot.respond /(pronounce|enunciate)( me)? (.*)/i, (msg) ->
     word = msg.match[3]
-    
+
     fetch_wordnik_resource(msg, word, 'audio', {}) (err, res, body) ->
         pronunciations = JSON.parse(body)
-      
+
         if pronunciations.length == 0
           msg.send "No pronounciation for \"#{word}\" found."
         else
@@ -109,7 +111,7 @@ fetch_wordnik_resource = (msg, word, resource, query, callback) ->
   if process.env.WORDNIK_API_KEY == undefined
     msg.send "Missing WORDNIK_API_KEY env variable."
     return
-    
+
   msg.http("http://api.wordnik.com/v4/word.json/#{escape(word)}/#{escape(resource)}")
     .query(query)
     .header('api_key', process.env.WORDNIK_API_KEY)

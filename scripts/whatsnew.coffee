@@ -13,12 +13,21 @@
 #   ewollesen
 
 _ = require("underscore")
+moment = require("moment")
 
 module.exports = (robot) ->
 
+  prevBusDay = ->
+    if 1 is moment().day()
+      moment().sod().subtract("days", 3)
+    else
+      moment().sod().subtract("days", 1)
+
   robot.respond /what\'?s new\??$/i, (msg) ->
+    date = prevBusDay().format("YYYY-MM-DD")
+
     msg
-      .http("http://git.lmpcloud.com:9191/repos/degreesearch")
+      .http("http://git.lmpcloud.com:9191/repos/degreesearch/date/#{date}")
       .get() (err, res, body) ->
         commits = JSON.parse(body)
 

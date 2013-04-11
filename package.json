@@ -25,7 +25,8 @@
     "underscore.string": "2.3.0",
     "xml2js": "0.1.14",
     "wolfram": "0.2.3",
-    "moment": "1.7.2"
+    "moment": "1.7.2",
+    "hubot-hipchat": ">= 2.4.5"
   },
 
   "engines": {

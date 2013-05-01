@@ -1,0 +1,12 @@
+#!/bin/bash
+
+pushd `dirname $0` > /dev/null
+BASE=`pwd`/..
+popd > /dev/null
+
+PATH=$(brew --prefix)/opt/icu4c/bin:$PATH
+
+eval $(heroku config --shell)
+
+#$BASE/bin/hubot --adapter hipchat --name "botbot" --alias ","
+$BASE/bin/hubot --adapter shell --name "botbot" --alias ","

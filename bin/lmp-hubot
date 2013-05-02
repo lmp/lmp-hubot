@@ -4,9 +4,8 @@ pushd `dirname $0` > /dev/null
 BASE=`pwd`/..
 popd > /dev/null
 
-PATH=$(brew --prefix)/opt/icu4c/bin:$PATH
-
-eval $(heroku config --shell)
+export PATH=$(brew --prefix)/opt/icu4c/bin:$PATH
+for i in `heroku config --shell`; do export $i; done
 
 #$BASE/bin/hubot --adapter hipchat --name "botbot" --alias ","
 $BASE/bin/hubot --adapter shell --name "botbot" --alias ","
